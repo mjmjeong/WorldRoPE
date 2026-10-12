@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="WorldRoPE: Probabilistic World-Centric Rotary Embedding for Multi-View Attention.">
+  <title>WorldRoPE: Probabilistic World-Centric Rotary Embedding for Multi-View Attention</title>
+  <link rel="icon" href="assets/favicon.svg?v=4" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles-demo.css?v=2">
+  <script src="script.js" defer></script>
+  <script src="worldrope-demo.js?v=5" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <main id="main">
+    <header class="paper-header page-width">
+        <img class="brand-mark" src="assets/worldrope-mark.svg?v=3" width="190" height="95" alt="One image patch branching into three Gaussian supports in world coordinates">
+        <h1><span class="brand-title"><span class="world">World</span>RoPE</span><span class="paper-title">Probabilistic <span class="title-emphasis">World-Centric</span> Rotary Embedding for Multi-View <span class="title-emphasis">Attention</span></span></h1>
+        <p class="authors"><span>Mijeong Kim<sup>1</sup></span><span>Kyujin Lim<sup>2</sup></span><span>Bohyung Han<sup>1,2</sup></span></p>
+        <p class="affiliation"><sup>1</sup>ECE &nbsp;·&nbsp; <sup>2</sup>IPAI, Seoul National University</p>
+        <p class="venue">Under Review</p>
+        <a class="paper-button" href="assets/worldrope-paper.pdf" target="_blank" rel="noopener" aria-label="Open WorldRoPE paper PDF">Paper ↗</a>
+    </header>
+
+    <p class="tldr-line"><strong>TL;DR:</strong> Multi-view attention, <em>grounded in 3D.</em></p>
+
+    <section class="abstract-section" id="abstract">
+      <div class="abstract-reading">
+        <h2>Abstract</h2>
+        <p>Rotary Positional Embedding (RoPE) encodes relative positions in Transformers, but image coordinates are defined separately in each camera view. We introduce WorldRoPE, a probabilistic world-centric RoPE for multi-view attention. At each layer, patch tokens predict mixtures of 3D Gaussians in a shared world frame. These primitives capture alternative depths, uncertainty, and the spatial extent of a patch.</p>
+        <p>Projected into a query view, the Gaussians define where a key token may appear. WorldRoPE integrates the rotary operator over this distribution in closed form, using mixture weights and covariance-dependent attenuation to guide attention without rasterizing token features. Updated features refine the geometry at the next layer. Experiments in novel view synthesis, stereo depth estimation, and feed-forward 3D reconstruction show its effectiveness across multi-view Transformers.</p>
+      </div>
+    </section>
+
+    <figure class="teaser">
+      <video autoplay muted loop playsinline controls poster="assets/hero-integral-light-poster.png?v=6" aria-label="WorldRoPE animation: a 2D patch becomes world-centric 3D Gaussian support, which projects to 2D Gaussians for expected RoPE"><source src="assets/hero-integral-light.mp4?v=6" type="video/mp4">Your browser does not support embedded video.</video>
+      <figcaption>A 2D patch token becomes world-centric 3D Gaussian support; RoPE is integrated over its projected 2D distribution.</figcaption>
+    </figure>
+
+    <div class="page-width">
+
+      <section class="paper-section" id="overview">
+        <h2>Why world-centric 3D Gaussians?</h2>
+        <p>A patch covers a viewing frustum, often crossing more than one depth. A mixture of volumetric Gaussians can retain those alternative surfaces, their uncertainty, and the finite footprint of the patch.</p>
+        <figure class="paper-figure">
+          <img src="assets/paper-figure-1.png" alt="Figure 1 from the paper: ray-based geometry, world-centric Gaussian token geometry, and probabilistic rotary embedding" loading="lazy">
+          <figcaption><b>Figure 1.</b> WorldRoPE overview. Multi-hypothesis token support is projected into the query view, where RoPE is integrated over possible key positions.</figcaption>
+        </figure>
+      </section>
+
+      <section class="paper-section" id="method">
+        <h2>How does this enter attention?</h2>
+        <p>Token features predict the Gaussians. Projecting them into the query view places possible key positions alongside the query; a closed-form rotary expectation then guides attention. Updated features predict geometry again at the next layer.</p>
+        <figure class="paper-figure">
+          <img src="assets/paper-figure-2.png" alt="Figure 2 from the paper: WorldRoPE inside multi-view attention, from Gaussian prediction to the next attention layer" loading="lazy">
+          <figcaption><b>Figure 2.</b> Multi-view attention with WorldRoPE. Geometry guides attention and updated features inform geometry prediction in the next layer.</figcaption>
+        </figure>
+        <p class="method-detail">The expected operator combines rotations at the projected Gaussian centers with covariance-dependent attenuation. It acts on positional evidence without rasterizing or warping token features.</p>
+      </section>
+
+      <section class="paper-section demo-section" id="projected-distribution">
+        <h2>Interactive Projected Distribution</h2>
+        <p>Move the key camera in 3D and change the possible depths of its center patch. The right panel shows the combined projected distribution in the query view.</p>
+        <div class="demo-shell" id="worldrope-demo">
+          <div class="demo-heading"><h3>3D camera pose and depth</h3><button type="button" id="demo-reset">Reset</button></div>
+          <div class="demo-controls">
+            <label for="demo-camera-y">Key camera Y <output id="demo-camera-y-value">+0.35</output><input id="demo-camera-y" type="range" min="-1.50" max="1.50" step="0.01" value="0.35"></label>
+            <label for="demo-yaw">Key camera yaw <output id="demo-yaw-value">−10°</output><input id="demo-yaw" type="range" min="-25" max="25" step="1" value="-10"></label>
+            <label for="demo-pitch">Key camera pitch <output id="demo-pitch-value">−8°</output><input id="demo-pitch" type="range" min="-25" max="25" step="1" value="-8"></label>
+            <label for="demo-depth">Mean depth <output id="demo-depth-value">2.20</output><input id="demo-depth" type="range" min="1.50" max="4.00" step="0.05" value="2.20"></label>
+            <label for="demo-split">Depth separation <output id="demo-split-value">1.40</output><input id="demo-split" type="range" min="0" max="2.00" step="0.05" value="1.40"></label>
+            <label for="demo-nearSigma">Near depth σ <output id="demo-nearSigma-value">0.14</output><input id="demo-nearSigma" type="range" min="0.02" max="1.20" step="0.01" value="0.14"></label>
+            <label for="demo-farSigma">Far depth σ <output id="demo-farSigma-value">1.00</output><input id="demo-farSigma" type="range" min="0.02" max="1.20" step="0.01" value="1.00"></label>
+          </div>
+          <label class="extent-control" for="demo-spatial-extent"><input id="demo-spatial-extent" type="checkbox" checked><span>Patch spatial extent</span><output id="demo-spatial-extent-value">On</output><small>Off shows depth uncertainty alone.</small></label>
+          <p class="demo-drag-hint">Drag the blue K camera up or down to change Y, including below zero. Drag the XZ handle to change depth and horizontal position. <output id="demo-camera-position">X 0.70 · Y +0.35 · Z 0.10</output></p>
+          <div class="demo-views">
+            <figure class="demo-view"><h3>Camera geometry <small>interactive 3D view</small></h3><svg id="demo-world" viewBox="0 0 480 300" role="img" aria-label="Interactive 3D camera geometry; drag the blue K camera for X and Y, or the XZ handle for X and Z"></svg><figcaption>Orange: fixed query camera. Blue: movable key camera. Ellipses: possible 3D support.</figcaption></figure>
+            <figure class="demo-view"><h3>Projected Probability Distribution <small>(Query View)</small></h3><div class="heatmap-stack"><img src="assets/projected-distribution-default.svg?v=2" width="420" height="300" alt="" aria-hidden="true"><canvas id="demo-heatmap" width="420" height="300" role="img" aria-label="Combined projected Gaussian density and the epipolar line in the query view"></canvas></div><div class="demo-legend"><span>0</span><span class="demo-gradient" aria-hidden="true"></span><span>1</span></div><figcaption>Equal-weight mixture of two projected Gaussians; the dashed orange line is the epipolar line.</figcaption></figure>
+          </div>
+          <p class="demo-status" id="demo-status" aria-live="polite"></p>
+        </div>
+        <p class="demo-note">Color encodes density relative to the visible peak (0–1). The equal-weight mixture integrates to one over the full query plane.</p>
+        <details class="demo-assumptions"><summary>Demo assumptions</summary><p>The center key patch has two possible depths with equal mixture weight and independently adjustable depth standard deviations, as in the paper's per-hypothesis mixture. A fixed 3D depth σ can look narrower after projection at a greater depth because perspective reduces disparity. Its depth uncertainty and optional patch footprint are projected through the fixed query camera. The dashed epipolar line is the projection of the center key ray over varying depth. To make spatial extent visible at this display size, the illustrative patch-footprint width is enlarged and grows with depth; it is not a learned covariance. A half-pixel regularization keeps the displayed density finite when spatial extent is off. Probability outside the query image frame is not shown.</p></details>
+      </section>
+
+      <section class="paper-section" id="results">
+        <h2>Does the world-centric 3D support improve synthesis?</h2>
+        <p>Within LVSM, WorldRoPE improves all three reported image-quality metrics on RE10K and Objaverse. In the examples below, thin structures remain more distinct.</p>
+        <figure class="paper-figure qualitative-figure">
+          <div class="image-scroll"><img src="assets/paper-figure-3.png" alt="Figure 3 from the paper: reference views, ground truth, six positional encoding baselines, and WorldRoPE on RE10K and Objaverse" loading="lazy"></div>
+          <figcaption><b>Figure 3.</b> WorldRoPE better preserves thin structures and fine details, including stair railings and bicycle wheels.</figcaption>
+        </figure>
+        <div class="table-scroll"><table>
+          <caption>Novel view synthesis with LVSM. Higher PSNR and SSIM, lower LPIPS.</caption>
+          <thead><tr><th rowspan="2">Method</th><th colspan="3">RE10K</th><th colspan="3">Objaverse</th></tr><tr><th>PSNR ↑</th><th>SSIM ↑</th><th>LPIPS ↓</th><th>PSNR ↑</th><th>SSIM ↑</th><th>LPIPS ↓</th></tr></thead>
+          <tbody>
+            <tr><th>Plücker ray</th><td>24.62</td><td>0.790</td><td>0.108</td><td>15.15</td><td>0.838</td><td>0.355</td></tr>
+            <tr><th>GTA</th><td>25.05</td><td>0.799</td><td>0.102</td><td>22.22</td><td>0.892</td><td>0.123</td></tr>
+            <tr><th>PRoPE</th><td>25.44</td><td>0.811</td><td>0.095</td><td>22.41</td><td>0.894</td><td>0.117</td></tr>
+            <tr><th>RayRoPE</th><td>26.17</td><td>0.833</td><td>0.081</td><td>22.25</td><td>0.892</td><td>0.121</td></tr>
+            <tr><th>URoPE</th><td>26.26</td><td>0.834</td><td>0.078</td><td>21.99</td><td>0.890</td><td>0.128</td></tr>
+            <tr class="ours"><th>WorldRoPE</th><td>26.75</td><td>0.846</td><td>0.073</td><td>22.52</td><td>0.896</td><td>0.113</td></tr>
+          </tbody>
+        </table></div>
+        <p class="table-note">PSNR is in dB. These are the values reported in Table 2 of the paper.</p>
+      </section>
+
+      <section class="paper-section" id="geometry">
+        <h2>What do the world-centric Gaussians capture?</h2>
+        <p>At a boundary between vegetation and sky, one token can have two depth peaks. Across attention layers, the predicted support becomes more structured in the paper's visualizations.</p>
+        <figure class="paper-figure">
+          <img src="assets/paper-figure-4.png" alt="Figure 4 from the paper: image tokens with multiple predicted depth peaks and two example depth distributions" loading="lazy">
+          <figcaption><b>Figure 4.</b> A patch spanning vegetation and sky has two distinct depth peaks, while a patch within vegetation has one dominant peak.</figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <img src="assets/paper-figure-7.png" alt="Figure 7 from the paper: world-space Gaussian primitives across layers and their projection into the query view" loading="lazy">
+          <figcaption><b>Figure 7.</b> World-space primitives across attention layers and their projection into the query view. RGB rasterization is used here only for visualization.</figcaption>
+        </figure>
+      </section>
+
+      <section class="paper-section" id="applications">
+        <h2>Does it transfer beyond synthesis?</h2>
+        <p>WorldRoPE is also evaluated in UniMatch for stereo depth estimation and in VGGT for feed-forward 3D reconstruction.</p>
+        <h3>Stereo depth estimation</h3>
+        <p>On the unseen ScanNet++ dataset, WorldRoPE records the lowest AbsRel and RMSE in the paper's UniMatch comparison.</p>
+        <div class="table-scroll"><table>
+          <caption>Stereo depth estimation with UniMatch. Lower is better.</caption>
+          <thead><tr><th>Method</th><th>Scenes11<br>RMSE ↓</th><th>SUN3D<br>RMSE ↓</th><th>RGBD<br>RMSE ↓</th><th>ScanNet++<br>AbsRel ↓</th><th>ScanNet++<br>RMSE ↓</th></tr></thead>
+          <tbody><tr><th>RayRoPE</th><td>0.743</td><td>0.370</td><td>0.677</td><td>0.257</td><td>0.426</td></tr><tr><th>URoPE</th><td>0.686</td><td>0.374</td><td>0.637</td><td>0.234</td><td>0.398</td></tr><tr class="ours"><th>WorldRoPE</th><td>0.661</td><td>0.356</td><td>0.630</td><td>0.224</td><td>0.386</td></tr></tbody>
+        </table></div>
+        <h3>Feed-forward 3D reconstruction</h3>
+        <p>In the VGGT comparison on ScanNet++, WorldRoPE has the lowest reported depth, camera-space point, and camera rotation errors.</p>
+        <div class="table-scroll"><table>
+          <caption>Feed-forward 3D reconstruction with VGGT on ScanNet++. Lower is better.</caption>
+          <thead><tr><th>Method</th><th>Depth<br>AbsRel ↓</th><th>Norm.<br>RMSE ↓</th><th>Camera points<br>AbsRel ↓</th><th>Rotation<br>error ↓</th></tr></thead>
+          <tbody><tr><th>RayRoPE</th><td>0.0579</td><td>0.0624</td><td>0.0575</td><td>1.04</td></tr><tr><th>URoPE</th><td>0.0581</td><td>0.0626</td><td>0.0576</td><td>1.02</td></tr><tr class="ours"><th>WorldRoPE</th><td>0.0567</td><td>0.0619</td><td>0.0565</td><td>0.98</td></tr></tbody>
+        </table></div>
+        <p class="paper-end">For derivations, ablations, and implementation details, read the <a href="assets/worldrope-paper.pdf" target="_blank" rel="noopener">full paper ↗</a>.</p>
+      </section>
+    </div>
+  </main>
+  <footer><div class="page-width"><span>WorldRoPE · Mijeong Kim, Kyujin Lim, Bohyung Han · Seoul National University</span><span>Layout inspired by <a href="https://rayrope.github.io/" target="_blank" rel="noopener">RayRoPE</a> and <a href="https://yuuraa.github.io/papers/choi2026egovqa/" target="_blank" rel="noopener">EgoPointVQA</a>.</span></div></footer>
+</body>
+</html>

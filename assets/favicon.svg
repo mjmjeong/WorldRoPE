@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Patch token to three world-space Gaussians">
+  <rect width="64" height="64" rx="13" fill="#fff"/>
+  <path d="M21 32 37 17M21 32 43 32M21 32 37 47" fill="none" stroke="#c4b9ce" stroke-width="1.8" stroke-dasharray="2 2"/>
+  <ellipse cx="40" cy="17" rx="10" ry="6" transform="rotate(-18 40 17)" fill="#e5f0f6" stroke="#548fb0" stroke-width="1.7"/>
+  <ellipse cx="47" cy="32" rx="11" ry="7" transform="rotate(-18 47 32)" fill="#f0eaf5" stroke="#8c70ae" stroke-width="1.7"/>
+  <ellipse cx="40" cy="47" rx="10" ry="6" transform="rotate(-18 40 47)" fill="#e6f4ee" stroke="#58a88f" stroke-width="1.7"/>
+  <rect x="7" y="23" width="16" height="18" rx="2" fill="#f2eff6" stroke="#5b4c78" stroke-width="2.4"/>
+  <rect x="11" y="27" width="8" height="10" rx="1" fill="#5b4c78"/>
+</svg>
