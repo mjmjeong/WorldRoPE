@@ -29,15 +29,9 @@
     <section class="abstract-section" id="abstract">
       <div class="abstract-reading">
         <h2>Abstract</h2>
-        <p>Rotary Positional Embedding (RoPE) encodes relative positions in Transformers, but image coordinates are defined separately in each camera view. We introduce WorldRoPE, a probabilistic world-centric RoPE for multi-view attention. At each layer, patch tokens predict mixtures of 3D Gaussians in a shared world frame. These primitives capture alternative depths, uncertainty, and the spatial extent of a patch.</p>
-        <p>Projected into a query view, the Gaussians define where a key token may appear. WorldRoPE integrates the rotary operator over this distribution in closed form, using mixture weights and covariance-dependent attenuation to guide attention without rasterizing token features. Updated features refine the geometry at the next layer. Experiments in novel view synthesis, stereo depth estimation, and feed-forward 3D reconstruction show its effectiveness across multi-view Transformers.</p>
+        <p>Rotary Positional Embedding (RoPE) is widely used to encode relative positions in Transformers. In multi-view settings, however, patch coordinates are defined independently in each image: the same 3D point can therefore have different coordinates across views, making them insufficient for establishing cross-view correspondences. We introduce WorldRoPE, a probabilistic world-centric RoPE for multi-view attention. At each layer, WorldRoPE back-projects each patch token into a set of volumetric Gaussian primitives in a shared world frame. These primitives represent multiple plausible 3D supports for a token, jointly capturing alternative depth hypotheses, depth uncertainty, and the finite spatial extent of its patch frustum. When a key token’s support is projected into a query view, it induces a distribution over where that key may appear in the query image. WorldRoPE integrates the rotary operator over this distribution in closed form, combining rotations at the projected primitive centers according to their mixture weights with covariance-dependent attenuation. This makes attention less sensitive to uncertain key locations in the query view, without rasterizing or warping token features. The formulation reduces to deterministic RoPE when the support collapses to a point. Across layers, the predicted geometry guides cross-view attention, while the updated features refine the geometry used at the next layer. Experiments on novel view synthesis, depth estimation, and 3D geometry reconstruction demonstrate the effectiveness of WorldRoPE for multi-view Transformers.</p>
       </div>
     </section>
-
-    <figure class="teaser">
-      <video autoplay muted loop playsinline controls poster="assets/hero-integral-light-poster.png?v=6" aria-label="WorldRoPE animation: a 2D patch becomes world-centric 3D Gaussian support, which projects to 2D Gaussians for expected RoPE"><source src="assets/hero-integral-light.mp4?v=6" type="video/mp4">Your browser does not support embedded video.</video>
-      <figcaption>A 2D patch token becomes world-centric 3D Gaussian support; RoPE is integrated over its projected 2D distribution.</figcaption>
-    </figure>
 
     <div class="page-width">
 

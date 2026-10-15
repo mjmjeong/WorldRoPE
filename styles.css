@@ -32,9 +32,6 @@ a:hover{color:#463b5d}
 .abstract-section h2{margin:0 0 28px;font-size:clamp(1.7rem,2.7vw,2.1rem);line-height:1.25;text-align:center;font-weight:600}
 .abstract-section p{margin:0 0 1.1em;font-size:17px;line-height:1.65;text-align:justify}
 .abstract-section p:last-child{margin-bottom:0}
-.teaser{width:min(840px,calc(100% - 40px));margin:0 auto;padding:0 0 58px}
-.teaser video{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#fff;border:1px solid #e5eaee;border-radius:4px}
-.teaser figcaption{margin-top:12px;color:#777;font-size:.88rem;line-height:1.5;text-align:center}
 .paper-section{padding:0 0 74px;scroll-margin-top:25px}
 .paper-section h2{margin:0 0 17px;color:#303238;font-size:clamp(25px,3vw,31px);line-height:1.28;letter-spacing:-.018em;font-weight:650}
 .paper-section#overview h2{text-align:center;font-size:clamp(1.7rem,2.7vw,2.1rem)}
