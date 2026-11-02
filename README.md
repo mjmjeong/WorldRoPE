@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://mjmjeong.github.io/research_projects/worldrope/">Project Page</a> ·
   <a href="https://arxiv.org/abs/2610.16337">Paper</a> ·
-  <a href="https://github.com/mjmjeong/WorldRoPE">Code (coming soon)</a>
+  <a href="https://github.com/mjmjeong/WorldRoPE">Code</a>
 </p>
 
 <p align="center">
@@ -17,16 +17,18 @@
 <p align="center">
   <a href="https://arxiv.org/abs/2610.16337"><img src="https://img.shields.io/badge/arXiv-2610.16337-b31b1b.svg" alt="arXiv"></a>
   <a href="https://mjmjeong.github.io/research_projects/worldrope/"><img src="https://img.shields.io/badge/Project%20Page-WorldRoPE-147d92.svg" alt="Project Page"></a>
-  <a href="https://github.com/mjmjeong/WorldRoPE"><img src="https://img.shields.io/badge/Code-coming%20soon-777777.svg" alt="Code coming soon"></a>
+  <a href="https://github.com/mjmjeong/WorldRoPE"><img src="https://img.shields.io/badge/Code-LVSM%20%2F%20NVS-4c8c55.svg" alt="LVSM / NVS code"></a>
 </p>
 
 Mijeong Kim<sup>1</sup> · Kyujin Lim<sup>2</sup> · Bohyung Han<sup>1,2</sup>
 
 <sup>1</sup> ECE · <sup>2</sup> IPAI, Seoul National University
 
-> **Status:** The research code is being prepared and will be released soon. Check back shortly for installation instructions, pretrained models, and reproducible evaluation scripts.
+> **Status:** LVSM novel view synthesis code is now available on [GitHub](https://github.com/mjmjeong/WorldRoPE/tree/main), with pretrained checkpoints on [Hugging Face](https://huggingface.co/mijeongkim/WorldRoPE).
 
 ## News
+
+- **2026-11-02:** Released LVSM/NVS code and pretrained WorldRoPE, RayRoPE and URoPE checkpoints.
 
 - **2026-10-22:** Project page and paper released. Code and pretrained models are coming soon.
 
@@ -120,14 +122,11 @@ The resulting world-space supports become more structured over attention layers 
 
 ## 📦 Code and models
 
-The implementation, pretrained checkpoints, training instructions, and evaluation scripts are **not released yet**. They are currently being cleaned up for the first public release and will be added to this repository soon.
-
-> **Coming soon:** installation · inference · pretrained models · training · evaluation
-
-Until then:
-
-- Read the [paper](https://arxiv.org/abs/2610.16337) for the derivation and experimental details.
-- Explore the [interactive project page](https://mjmjeong.github.io/research_projects/worldrope/) for the method and projected-distribution demo.
+The LVSM novel view synthesis implementation, installation instructions,
+training and evaluation scripts are available in the
+[code repository](https://github.com/mjmjeong/WorldRoPE/tree/main).
+Download WorldRoPE, RayRoPE and URoPE checkpoints with their configurations
+from [Hugging Face](https://huggingface.co/mijeongkim/WorldRoPE).
 
 ## Citation
 
