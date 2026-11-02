@@ -1,0 +1,71 @@
+dataset_name: realestate10k
+model_config:
+  ref_views: 2
+  tar_views: 1
+  encoder:
+    layer:
+      d_model: 1152
+      nhead: 8
+      dim_feedforward: 1024
+      dropout: 0.0
+      activation: torch.nn.functional.relu
+      layer_norm_eps: 1.0e-05
+      batch_first: true
+      norm_first: true
+      bias: false
+      elementwise_affine: true
+      qk_norm: true
+      predict_d: none
+      init_depth: 0.0
+      init_sigma: 3.0
+      predict_anchor_weights: 0
+      predict_anchor_sigmas: 0
+      predict_anchor_means: 0
+      anchor_mean_init: []
+      norm_type: layer_norm
+      modulation_activation: null
+    num_layers: 6
+    input_norm: true
+    output_norm: true
+    checkpointing: false
+  img_shape:
+  - 256
+  - 256
+  - 3
+  cam_shape:
+  - 256
+  - 256
+  - 6
+  patch_size: 8
+  ray_encoding: camray
+  pos_enc: rayrope
+  urope_min_depth: 2.0
+  urope_max_depth: 20.0
+  urope_learned_anchor_mixture: false
+  urope_learned_anchor_gaussian_mixture: false
+  urope_learned_anchor_gmm_learned_means: false
+  urope_fixed_lateral_footprint_kv: false
+  urope_mixed_init_seed: 42
+  urope_uv_frequency_min: 0.014677992676220698
+  urope_uv_frequency_max: 1.0
+  urope_depth_frequency_min: 0.029355985352441397
+  urope_depth_frequency_max: 2.0
+  urope_3d_mixed_frequency_min: 0.014677992676220698
+  urope_3d_mixed_frequency_max: 2.0
+  rayrope_pos_enc_type: d_pj+0_3d
+  rayrope_num_rays_per_patch: 3
+  rayrope_depth_type: predict_dsig
+  rayrope_denc_type: inv_d
+  rayrope_freq_base: 3.0
+  rayrope_disable_vo: false
+  rayrope_equal_ray_thirds: false
+  rayrope_ray_uv_num_freqs: 3
+  rayrope_ray_depth_num_freqs: 2
+  rayrope_frequency_profile: vanilla
+  rayrope_init_depth: 0.0
+  rayrope_init_sigma: 3.0
+  rayrope_undo_urope_camera_flip: true
+  rayrope_normalize_unit_baseline: true
+seed: 1
+max_steps: 80000
+source_kind: official_pretrained_architecture_reconstructed_from_readme_and_tensor_shapes

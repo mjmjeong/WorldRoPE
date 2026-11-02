@@ -1,150 +1,240 @@
-# WorldRoPE: Probabilistic World-Centric Rotary Embedding for Multi-View Attention
+
+<h2 align="center">WorldRoPE: Probabilistic World-Centric Rotary Embedding<br>for Multi-View Attention</h2>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/hero-full.gif" alt="WorldRoPE: a 2D patch token becoming world-centric Gaussian support and guiding cross-view attention" width="900">
-</p>
-
-<p align="center">
-  <a href="https://mjmjeong.github.io/research_projects/worldrope/">Project Page</a> ·
-  <a href="https://arxiv.org/abs/2610.16337">Paper</a> ·
-  <a href="https://github.com/mjmjeong/WorldRoPE">Code (coming soon)</a>
-</p>
-
-<p align="center">
-  <b>Multi-view attention, grounded in 3D.</b>
+  <a href="https://mjmjeong.github.io/">Mijeong Kim</a><sup>1</sup> · Kyujin Lim<sup>2</sup> · Bohyung Han<sup>1,2</sup><br>
+  <sup>1</sup> ECE · <sup>2</sup> IPAI, Seoul National University
 </p>
 
 <p align="center">
   <a href="https://arxiv.org/abs/2610.16337"><img src="https://img.shields.io/badge/arXiv-2610.16337-b31b1b.svg" alt="arXiv"></a>
   <a href="https://mjmjeong.github.io/research_projects/worldrope/"><img src="https://img.shields.io/badge/Project%20Page-WorldRoPE-147d92.svg" alt="Project Page"></a>
-  <a href="https://github.com/mjmjeong/WorldRoPE"><img src="https://img.shields.io/badge/Code-coming%20soon-777777.svg" alt="Code coming soon"></a>
+  <a href="https://huggingface.co/mijeongkim/WorldRoPE"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-ffcf40.svg" alt="Hugging Face models"></a>
+  <a href="#using-worldrope"><img src="https://img.shields.io/badge/Code-LVSM%20%2F%20NVS-4c8c55.svg" alt="LVSM / NVS code"></a>
 </p>
 
-Mijeong Kim<sup>1</sup> · Kyujin Lim<sup>2</sup> · Bohyung Han<sup>1,2</sup>
-
-<sup>1</sup> ECE · <sup>2</sup> IPAI, Seoul National University
-
-> **Status:** The research code is being prepared and will be released soon. Check back shortly for installation instructions, pretrained models, and reproducible evaluation scripts.
-
-## News
-
-- **2026-10-22:** Project page and paper released. Code and pretrained models are coming soon.
-
-## ✨ Highlights
-
-<table>
-  <tr>
-    <td width="33%" valign="top"><b>🌍 World-centric geometry</b><br>Represent each patch as a probabilistic set of 3D Gaussian supports in a shared world frame.</td>
-    <td width="33%" valign="top"><b>🎯 Geometry-aware attention</b><br>Project uncertain key supports into the query view to establish cross-view correspondence.</td>
-    <td width="33%" valign="top"><b>⚡ Closed-form RoPE</b><br>Integrate the rotary operator analytically without rasterizing or warping token features.</td>
-  </tr>
-</table>
-
-## Overview
-
-Rotary Positional Embedding (RoPE) encodes relative positions in Transformers. In multi-view settings, however, image coordinates are defined independently in each camera view: the same 3D point can therefore receive different 2D coordinates across views.
-
-**WorldRoPE** introduces a probabilistic, world-centric RoPE for multi-view attention. At each Transformer layer, patch tokens predict a mixture of volumetric 3D Gaussians in a shared world frame. These primitives represent multiple plausible depths, depth uncertainty, and the finite spatial extent of a patch. After projection into a query view, they define a probability distribution over where a key token may appear. WorldRoPE integrates the rotary operator over this distribution in closed form, allowing geometry-aware attention without rasterizing or warping token features.
+<h3 align="center">Multi-view attention, grounded in 3D.</h3>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/paper-figure-1.png" alt="WorldRoPE overview: ray-based geometry, world-centric Gaussian token geometry, and probabilistic rotary embedding" width="900">
+  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/hero-full.gif" alt="Image tokens become world-centric Gaussian supports for multi-view attention" width="585">
 </p>
 
-## Method
+**WorldRoPE** represents each image token with probabilistic 3D Gaussian supports
+and integrates rotary embeddings over their projection into a query view.
+It captures multiple depth hypotheses, depth uncertainty and the spatial extent
+of a patch, without rasterizing or warping token features.
 
-WorldRoPE alternates between feature interaction and geometric refinement:
 
-1. Token features predict a set of world-centric Gaussian supports for each key patch.
-2. The Gaussian supports are projected into the query camera, producing a distribution of possible key locations.
-3. The rotary operator is integrated over that distribution in closed form.
-4. The updated features predict refined geometry at the next layer.
+## Updates
 
-The expected rotary operator combines rotations at projected Gaussian centers according to their mixture weights, with covariance-dependent attenuation that reduces the influence of uncertain locations.
+- **[2026-11-02]** Updated **WorldRoPE(ours)** usage instructions, including the [Plücker ray](https://github.com/haian-jin/LVSM), [PRoPE (NeurIPS 2025)](https://github.com/liruilong940607/prope), [RayRoPE (ECCV 2026)](https://github.com/Lucas-707/RayRoPE) and [URoPE (ECCV 2026)](https://urope-pe.github.io/) baselines.
+- **[2026-11-02]** Reorganized the implementation and added a standalone usage example.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/paper-figure-2.png" alt="WorldRoPE inside multi-view attention" width="900">
-</p>
+## Using WorldRoPE
 
-For an interactive view of the projected distribution, see the [project page](https://mjmjeong.github.io/research_projects/worldrope/).
+WorldRoPE predicts Gaussian supports from the token features at each layer.
+The attention module and its matching MHA can be initialized as follows:
 
-For a short visual overview, watch the [WorldRoPE method video](https://mjmjeong.github.io/research_projects/worldrope/assets/hero.mp4).
+```python
+from pos_enc.worldrope import WorldRoPEDotProductAttention
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/worldrope-explainer-poster.png" alt="WorldRoPE visual explanation" width="850">
-</p>
+worldrope = WorldRoPEDotProductAttention(
+    head_num=16, head_dim=48,
+    patches_x=32, patches_y=32,
+    image_width=256, image_height=256,
+)
+mha = worldrope.make_mha(embed_dim=768)
+
+def sdpa(q, k, v, **kwargs):
+    return worldrope(q, k, v, viewmats=viewmats, Ks=Ks, **kwargs)
+
+output = mha(tokens, tokens, tokens, sdpa_fn=sdpa)
+```
+
+`tokens` has shape `[B, V×patches, C]`, `viewmats` is `[B,V,4,4]`, and `Ks` is
+`[B,V,3,3]`. Tokens are grouped by view. Use pixel-valued intrinsics and the
+Blender/OpenGL world-to-camera convention expected by the NVS loader.
+
+For a complete example with synthetic cameras and backward:
+
+```bash
+python scripts/example_usage.py
+```
+
+### Implementation
+
+```text
+pos_enc/
+├── worldrope/
+│   ├── attention.py
+│   ├── token_with_gaussian_splatting.py
+│   └── integration_probabilistic_rope.py
+├── rayrope/
+│   ├── attention.py
+│   ├── token_to_ray.py
+│   └── mha.py
+├── urope/
+│   ├── attention.py
+│   └── multi_head_anchor.py
+├── plucker_ray/
+├── prope/
+├── xy_rope/
+└── utils/                     # Shared attention, Transformer and camera utilities
+```
+
+Gaussian support construction and projection live in
+`token_with_gaussian_splatting.py`; expected rotary coefficients live in
+`integration_probabilistic_rope.py`. Here “splatting” refers to finite Gaussian
+support: the implementation does not rasterize token features.
+
+Each method package exposes its public API through `__init__.py`. Baseline
+variants remain in their method folders. RE10K and Objaverse use this same
+implementation, with dataset-specific camera and depth settings.
+
+## NVS experiments
+
+### Environment setup
+
+```bash
+conda create -n worldrope python=3.11
+conda activate worldrope
+pip install -r requirements.txt
+```
+
+We use PyTorch 2.5.1 and CUDA 12.4 wheels. Training and evaluation require CUDA;
+the standalone example also runs on CPU.
+
+### Dataset setup
+
+**RealEstate10K.** Prepare a scene/view tree with `train/<scene>/transforms.json`,
+`train/<scene>/images/`, and corresponding `test/` directories. The camera
+conversion and image preprocessing utilities are in `scripts/`.
+
+**Objaverse.** Prepare packed radial-0 renders with a matching training schedule.
+Select this backend with `--dataset objaverse`; both datasets use the same code.
+
+See [data preparation and camera conventions](docs/DATA.md) for the exact formats,
+preprocessing commands and optional cache builders. Datasets and sampling caches
+are not included in the repository.
+
+### Training
+
+Training and evaluation are launched with `scripts/nvs.sh`:
+
+```bash
+bash scripts/nvs.sh --dataset re10k --method worldrope --gpus 0,1 \
+  --data-root /path/to/re10k \
+  --output-dir /path/to/new-training-output
+```
+
+Use `--method rayrope` or `--method urope` for the corresponding baseline.
+Other supported options are `plucker`, `prope` and `xyrope`.
+Run `bash scripts/nvs.sh --help` for arguments, or add `--dry-run` to inspect
+the resolved configuration without starting training.
+
+For Objaverse, supply the packed data and its two-rank training schedule:
+
+```bash
+bash scripts/nvs.sh --dataset objaverse --method worldrope --gpus 0,1 \
+  --fast-dir /path/to/objaverse-packed --schedule /path/to/schedule.npy \
+  --output-dir /path/to/new-training-output
+```
+
+The main WorldRoPE model has six Transformer layers and **24.5M parameters**.
+Training uses MSE and the inherited VGG perceptual loss; its VGG weights must be
+prepared separately. See [data preparation](docs/DATA.md) for fixed-schedule
+training and the data needed to match the original experiments.
+
+### Evaluation
+
+```bash
+bash scripts/nvs.sh --dataset re10k --method worldrope --gpus 0 \
+  --data-root /path/to/re10k --test \
+  --checkpoint /path/to/checkpoint.pt \
+  --output-dir /path/to/new-evaluation-output
+```
+
+Evaluation reports PSNR, SSIM and AlexNet LPIPS. The RE10K protocol uses two
+context views and three target views. LPIPS requires its pretrained AlexNet
+weights. Evaluate Objaverse through the same entry point:
+
+```bash
+bash scripts/nvs.sh --dataset objaverse --method worldrope --gpus 0 \
+  --fast-dir /path/to/objaverse-packed --test \
+  --checkpoint /path/to/worldrope_lvsm/objaverse/model.pt \
+  --output-dir /path/to/new-evaluation-output
+```
+
+The included Objaverse evaluator uses **gap 4**. The paper reports a mixed-gap
+protocol whose external evaluation wrapper is not included; these protocols
+should be compared separately.
+
+### Checkpoints
+
+WorldRoPE, RayRoPE and URoPE checkpoints and the model card are available on
+[Hugging Face](https://huggingface.co/mijeongkim/WorldRoPE).
+
+| Method | Checkpoint family |
+|:--|:--|
+| [RayRoPE (ECCV 2026, spotlight)](https://github.com/Lucas-707/RayRoPE) | [`rayrope_lvsm_reproduce`](https://huggingface.co/mijeongkim/WorldRoPE/tree/main/rayrope_lvsm_reproduce) |
+| [URoPE (ECCV 2026, spotlight)](https://urope-pe.github.io/) | [`urope_lvsm_reproduce`](https://huggingface.co/mijeongkim/WorldRoPE/tree/main/urope_lvsm_reproduce) |
+| **WorldRoPE** | **[`worldrope_lvsm`](https://huggingface.co/mijeongkim/WorldRoPE/tree/main/worldrope_lvsm)** |
+
+Download [RE10K weights](https://huggingface.co/mijeongkim/WorldRoPE/resolve/main/worldrope_lvsm/re10k/model.pt)
+or [Objaverse weights](https://huggingface.co/mijeongkim/WorldRoPE/resolve/main/worldrope_lvsm/objaverse/model.pt),
+or fetch all checkpoints with their configurations:
+
+```bash
+hf download mijeongkim/WorldRoPE --local-dir checkpoints
+```
+
+Existing main WorldRoPE weights retain their tensor keys after the code
+reorganization. To verify a checkpoint and its saved configuration:
+
+```bash
+python scripts/check_checkpoint.py \
+  --checkpoint /path/to/checkpoint.pt --config /path/to/config.yaml
+```
+
+Legacy configurations can be converted with `scripts/convert_config.py`.
+See [checkpoint configurations](docs/CHECKPOINTS.md) for saved architectures
+and baseline loading instructions. Use `--model-config` for a checkpoint whose
+architecture differs from the default integration recipe.
 
 ## Results
 
-### Novel view synthesis
+Reported novel view synthesis results from the paper:
 
-With LVSM, WorldRoPE improves all three reported image-quality metrics on RE10K and Objaverse. Higher is better for PSNR and SSIM; lower is better for LPIPS.
-
-| Method | RE10K PSNR ↑ | RE10K SSIM ↑ | RE10K LPIPS ↓ | Objaverse PSNR ↑ | Objaverse SSIM ↑ | Objaverse LPIPS ↓ |
+| Method | RE10K PSNR ↑ | SSIM ↑ | LPIPS ↓ | Objaverse PSNR ↑ | SSIM ↑ | LPIPS ↓ |
 |:--|--:|--:|--:|--:|--:|--:|
-| Plücker ray | 24.62 | 0.790 | 0.108 | 15.15 | 0.838 | 0.355 |
-| GTA | 25.05 | 0.799 | 0.102 | 22.22 | 0.892 | 0.123 |
-| PRoPE | 25.44 | 0.811 | 0.095 | 22.41 | 0.894 | 0.117 |
 | RayRoPE | 26.17 | 0.833 | 0.081 | 22.25 | 0.892 | 0.121 |
 | URoPE | 26.26 | 0.834 | 0.078 | 21.99 | 0.890 | 0.128 |
 | **WorldRoPE** | **26.75** | **0.846** | **0.073** | **22.52** | **0.896** | **0.113** |
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/paper-figure-3.png" alt="Qualitative novel view synthesis comparison on RE10K and Objaverse" width="1000">
-</p>
-
-### Beyond novel view synthesis
-
-WorldRoPE also transfers to stereo depth estimation with UniMatch and feed-forward 3D reconstruction with VGGT.
-
-| Task | Benchmark | Metric | RayRoPE | URoPE | **WorldRoPE** |
-|:--|:--|:--|--:|--:|--:|
-| Stereo depth | ScanNet++ | AbsRel ↓ | 0.257 | 0.234 | **0.224** |
-| Stereo depth | ScanNet++ | RMSE ↓ | 0.426 | 0.398 | **0.386** |
-| 3D reconstruction | ScanNet++ | Depth AbsRel ↓ | 0.0579 | 0.0581 | **0.0567** |
-| 3D reconstruction | ScanNet++ | Camera-point AbsRel ↓ | 0.0575 | 0.0576 | **0.0565** |
-| 3D reconstruction | ScanNet++ | Rotation error ↓ | 1.04 | 1.02 | **0.98** |
-
-## Understanding the representation
-
-A single image patch may cross multiple surfaces. WorldRoPE preserves this ambiguity as multiple depth hypotheses instead of collapsing the patch to a single point estimate.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/paper-figure-4.png" alt="Multiple predicted depth peaks for image tokens" width="900">
-</p>
-
-The resulting world-space supports become more structured over attention layers and can be projected into another view for geometry-aware correspondence.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/mjmjeong/WorldRoPE/project-page/assets/paper-figure-7.png" alt="World-space Gaussian primitives across attention layers" width="900">
-</p>
-
-## 📦 Code and models
-
-The implementation, pretrained checkpoints, training instructions, and evaluation scripts are **not released yet**. They are currently being cleaned up for the first public release and will be added to this repository soon.
-
-> **Coming soon:** installation · inference · pretrained models · training · evaluation
-
-Until then:
-
-- Read the [paper](https://arxiv.org/abs/2610.16337) for the derivation and experimental details.
-- Explore the [interactive project page](https://mjmjeong.github.io/research_projects/worldrope/) for the method and projected-distribution demo.
+The reorganized WorldRoPE implementation was checked against its original
+source: outputs and gradients match on synthetic inputs, and real-image FP16
+inference on four scenes per dataset produces identical images and metrics.
+This is an implementation check, not a new full benchmark.
 
 ## Citation
 
-If you find WorldRoPE useful, please cite:
-
 ```bibtex
 @article{kim2026worldrope,
-  title         = {WorldRoPE: Probabilistic World-Centric Rotary Embedding for Multi-View Attention},
-  author        = {Kim, Mijeong and Lim, Kyujin and Han, Bohyung},
-  journal       = {arXiv preprint arXiv:2610.16337},
-  year          = {2026},
-  eprint        = {2610.16337},
-  archivePrefix = {arXiv},
-  url           = {https://arxiv.org/abs/2610.16337}
+  title={WorldRoPE: Probabilistic World-Centric Rotary Embedding for Multi-View Attention},
+  author={Kim, Mijeong and Lim, Kyujin and Han, Bohyung},
+  journal={arXiv preprint arXiv:2610.16337},
+  year={2026}
 }
 ```
 
 ## Acknowledgements
 
-This project was developed at Seoul National University. The layout and presentation are inspired by [RayRoPE](https://rayrope.github.io/) and [EgoPointVQA](https://yuuraa.github.io/papers/choi2026egovqa/).
+Our implementation builds on [RayRoPE](https://github.com/Lucas-707/RayRoPE),
+[URoPE](https://urope-pe.github.io/),
+[PRoPE](https://github.com/liruilong940607/prope) and
+[LVSM](https://github.com/haian-jin/LVSM). We thank the authors for sharing their work.
+
+See [LICENSE](LICENSE), [NOTICE](licenses/NOTICE) and
+[THIRD_PARTY_LICENSES](licenses/THIRD_PARTY_LICENSES)
+for the inherited terms, attributions and the unresolved perceptual-loss license
+item.

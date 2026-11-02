@@ -1,0 +1,118 @@
+acc: 1
+amp: true
+amp_dtype: fp16
+aug_with_world_origin_shift: false
+aug_with_world_rotation: false
+auto_resume: false
+check_nan_in_params: false
+ckpt_every: 1000
+ckpt_keeps: 3
+ckpt_subdir: ckpts
+data_seed: 42
+dataset_batch_scenes: 8
+dataset_name: realestate10k
+dataset_patch_size: 256
+dataset_supervise_views: 1
+fixed_seed: true
+grad_clip: 0.0
+lr: 0.0004
+max_steps: 80000
+model_config:
+  cam_shape:
+  - 256
+  - 256
+  - 6
+  encoder:
+    checkpointing: false
+    input_norm: true
+    layer:
+      activation: torch.nn.functional.relu
+      anchor_mean_init: []
+      batch_first: true
+      bias: false
+      d_model: 768
+      dim_feedforward: 1024
+      dropout: 0.0
+      elementwise_affine: true
+      init_depth: 0.0
+      init_sigma: 3.0
+      layer_norm_eps: 1.0e-05
+      modulation_activation: null
+      nhead: 16
+      norm_first: true
+      norm_type: layer_norm
+      predict_anchor_means: 0
+      predict_anchor_sigmas: 0
+      predict_anchor_weights: 0
+      predict_d: none
+      qk_norm: true
+    num_layers: 6
+    output_norm: true
+  img_shape:
+  - 256
+  - 256
+  - 3
+  patch_size: 8
+  pos_enc: urope_uvd_axial
+  ray_encoding: camray
+  rayrope_denc_type: inv_d
+  rayrope_depth_type: predict_dsig
+  rayrope_disable_vo: false
+  rayrope_equal_ray_thirds: false
+  rayrope_freq_base: 3.0
+  rayrope_frequency_profile: vanilla
+  rayrope_init_depth: 0.0
+  rayrope_init_sigma: 3.0
+  rayrope_normalize_unit_baseline: true
+  rayrope_num_rays_per_patch: 3
+  rayrope_pos_enc_type: d_pj+0_3d
+  rayrope_ray_depth_num_freqs: 2
+  rayrope_ray_uv_num_freqs: 3
+  rayrope_undo_urope_camera_flip: true
+  ref_views: 2
+  tar_views: 1
+  urope_3d_mixed_frequency_max: 2.0
+  urope_3d_mixed_frequency_min: 0.014677992676220698
+  urope_depth_frequency_max: 2.0
+  urope_depth_frequency_min: 0.029355985352441397
+  urope_fixed_lateral_footprint_kv: true
+  urope_learned_anchor_gaussian_mixture: true
+  urope_learned_anchor_gmm_learned_means: true
+  urope_learned_anchor_mixture: false
+  urope_max_depth: 20.0
+  urope_min_depth: 2.0
+  urope_mixed_init_seed: 42
+  urope_uv_frequency_max: 1.0
+  urope_uv_frequency_min: 0.014677992676220698
+objaverse_fast_dir: null
+objaverse_schedule_file: null
+only_model: false
+output_dir: results/worldrope
+perceptual_loss_w: 0.5
+print_every: 100
+random_zoom: false
+re10k_fast_train_dir: null
+re10k_image_cache_dir: null
+re10k_legacy_schedule_file: null
+render_video: false
+render_views: false
+resume: null
+seed: 42
+skip_nonfinite_updates: true
+stats_subdir: stats
+test_every: 80000
+test_index_fp: null
+test_input_views: 2
+test_n: null
+test_only: false
+test_subdir: tests
+test_supervise_views: 3
+test_zoom_factor:
+- 1.0
+train_num_workers: 4
+train_prefetch_factor: 2
+train_zoom_factor: 1.0
+use_torch_compile: false
+visual_every: 100
+visual_subdir: visuals
+warmup_steps: 2500
