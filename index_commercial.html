@@ -46,10 +46,12 @@
     </header>
     <div class="page-width">
       <section class="abstract" id="abstract" aria-labelledby="abstract-title">
-        <h2 id="abstract-title">Abstract</h2>
-        <div class="abstract-text">
-          <p>Rotary Positional Embedding (RoPE) is widely used to encode relative positions in Transformers. In multi-view settings, however, patch coordinates are defined independently in each image: the same 3D point can therefore have different coordinates across views, making them insufficient for establishing cross-view correspondences. We introduce WorldRoPE, a probabilistic world-centric RoPE for multi-view attention. At each layer, WorldRoPE back-projects each patch token into a set of volumetric Gaussian primitives in a shared world frame. These primitives represent multiple plausible 3D supports for a token, jointly capturing alternative depth hypotheses, depth uncertainty, and the finite spatial extent of its patch frustum. When a key token’s support is projected into a query view, it induces a distribution over where that key may appear in the query image. WorldRoPE integrates the rotary operator over this distribution in closed form, combining rotations at the projected primitive centers according to their mixture weights with covariance-dependent attenuation. This makes attention less sensitive to uncertain key locations in the query view, without rasterizing or warping token features. The formulation reduces to deterministic RoPE when the support collapses to a point. Across layers, the predicted geometry guides cross-view attention, while the updated features refine the geometry used at the next layer. Experiments on novel view synthesis, depth estimation, and 3D geometry reconstruction demonstrate the effectiveness of WorldRoPE for multi-view Transformers.</p>
-        </div>
+        <details class="abstract-toggle">
+          <summary id="abstract-title">Abstract</summary>
+          <div class="abstract-text">
+            <p>Rotary Positional Embedding (RoPE) is widely used to encode relative positions in Transformers. In multi-view settings, however, patch coordinates are defined independently in each image: the same 3D point can therefore have different coordinates across views, making them insufficient for establishing cross-view correspondences. We introduce WorldRoPE, a probabilistic world-centric RoPE for multi-view attention. At each layer, WorldRoPE back-projects each patch token into a set of volumetric Gaussian primitives in a shared world frame. These primitives represent multiple plausible 3D supports for a token, jointly capturing alternative depth hypotheses, depth uncertainty, and the finite spatial extent of its patch frustum. When a key token’s support is projected into a query view, it induces a distribution over where that key may appear in the query image. WorldRoPE integrates the rotary operator over this distribution in closed form, combining rotations at the projected primitive centers according to their mixture weights with covariance-dependent attenuation. This makes attention less sensitive to uncertain key locations in the query view, without rasterizing or warping token features. The formulation reduces to deterministic RoPE when the support collapses to a point. Across layers, the predicted geometry guides cross-view attention, while the updated features refine the geometry used at the next layer. Experiments on novel view synthesis, depth estimation, and 3D geometry reconstruction demonstrate the effectiveness of WorldRoPE for multi-view Transformers.</p>
+          </div>
+        </details>
       </section>
 
       <section class="paper-section" id="overview">
@@ -74,10 +76,11 @@
         </details>
       </section>
 
-      <section class="paper-section demo-section" id="attention-demo">
+      <section class="paper-section demo-section gaussian-section" id="attention-demo">
         <h2>Explore World-Space Gaussian Supports</h2>
         <p>Click through the key view, query view, and attention layers to see how Gaussian supports evolve and project across views.</p>
         <div class="gaussian-explorer" id="gaussian-explorer">
+          <div class="gaussian-toolbar"><label class="gaussian-scene-select" for="gaussian-scene">Scene<select id="gaussian-scene"><option value="living-room">Living Room</option><option value="outdoor">Outdoor Scene</option><option value="objaverse">Objaverse</option></select></label></div>
           <div class="gaussian-tabs" role="tablist" aria-label="WorldRoPE Gaussian views">
             <button type="button" role="tab" aria-selected="true" data-gaussian-view="query">Query View</button>
             <button type="button" role="tab" aria-selected="false" data-gaussian-view="key">Key View</button>
@@ -86,11 +89,9 @@
             <button type="button" role="tab" aria-selected="false" data-gaussian-view="layer3">Layer 3</button>
             <button type="button" role="tab" aria-selected="false" data-gaussian-view="layer4">Layer 4</button>
           </div>
-          <div class="gaussian-stage" id="gaussian-viewer" data-active-view="query">
-            <canvas id="gaussian-canvas" width="1200" height="520" role="img" aria-label="World-space Gaussian viewer"></canvas>
-            <div class="gaussian-placeholder"><strong>World-space Gaussian viewer</strong><span id="gaussian-viewer-status">3DGS renderer will load here · Query View</span></div>
+          <div class="gaussian-stage" id="gaussian-viewer" data-active-view="query"><canvas id="gaussian-canvas" width="1200" height="520" role="img" aria-label="World-space Gaussian viewer"></canvas><div class="gaussian-placeholder"><strong>World-space Gaussian viewer</strong><span id="gaussian-viewer-status">3DGS renderer will load here · Query View</span></div></div>
+          <div class="gaussian-caption"><h3 id="gaussian-title">Query View</h3><p id="gaussian-description" aria-live="polite">The query camera receiving projected Gaussian support from the key view.</p></div>
           </div>
-          <div class="gaussian-caption"><h3 id="gaussian-title">Query View</h3><p id="gaussian-description" aria-live="polite">The query image receiving projected Gaussian support from the key view.</p></div>
         </div>
         <div class="demo-shell" id="worldrope-demo">
           <div class="demo-heading"><h3>3D camera pose and depth</h3><button type="button" id="demo-reset">Reset</button></div>

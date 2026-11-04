@@ -6,6 +6,7 @@
   const status = document.getElementById('gaussian-viewer-status');
   const title = document.getElementById('gaussian-title');
   const description = document.getElementById('gaussian-description');
+  const scene = document.getElementById('gaussian-scene');
   const tabs = [...root.querySelectorAll('[data-gaussian-view]')];
   const views = {
     query: ['Query View', 'The query camera receiving projected Gaussian support from the key view.'],
@@ -25,4 +26,9 @@
     description.textContent = copy;
     status.textContent = `3DGS renderer will load here · ${label}`;
   }));
+
+  scene?.addEventListener('change', () => {
+    const label = views[viewer.dataset.activeView]?.[0] || 'Query View';
+    status.textContent = `3DGS renderer will load here · ${scene.options[scene.selectedIndex].text} · ${label}`;
+  });
 })();
