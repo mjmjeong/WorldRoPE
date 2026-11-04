@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles-commercial.css?v=2">
   <script src="script.js" defer></script>
   <script src="worldrope-demo.js?v=5" defer></script>
+  <script src="worldrope-gaussians.js?v=1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -76,8 +77,23 @@
       </section>
 
       <section class="paper-section demo-section" id="attention-demo">
-        <h2>Interactive Projected Distribution</h2>
-        <p>Move the key camera in 3D and change the possible depths of its center patch. The right panel shows the combined projected distribution in the query view.</p>
+        <h2>Explore World-Space Gaussian Supports</h2>
+        <p>Click through the key view, query view, and attention layers to see how Gaussian supports evolve and project across views.</p>
+        <div class="gaussian-explorer" id="gaussian-explorer">
+          <div class="gaussian-tabs" role="tablist" aria-label="WorldRoPE Gaussian views">
+            <button type="button" role="tab" aria-selected="true" data-gaussian-view="query">Query View</button>
+            <button type="button" role="tab" aria-selected="false" data-gaussian-view="key">Key View</button>
+            <button type="button" role="tab" aria-selected="false" data-gaussian-view="layer1">Layer 1</button>
+            <button type="button" role="tab" aria-selected="false" data-gaussian-view="layer2">Layer 2</button>
+            <button type="button" role="tab" aria-selected="false" data-gaussian-view="layer3">Layer 3</button>
+            <button type="button" role="tab" aria-selected="false" data-gaussian-view="layer4">Layer 4</button>
+          </div>
+          <div class="gaussian-stage" id="gaussian-viewer" data-active-view="query">
+            <canvas id="gaussian-canvas" width="1200" height="520" role="img" aria-label="World-space Gaussian viewer"></canvas>
+            <div class="gaussian-placeholder"><strong>World-space Gaussian viewer</strong><span id="gaussian-viewer-status">3DGS renderer will load here · Query View</span></div>
+          </div>
+          <div class="gaussian-caption"><h3 id="gaussian-title">Query View</h3><p id="gaussian-description" aria-live="polite">The query image receiving projected Gaussian support from the key view.</p></div>
+        </div>
         <div class="demo-shell" id="worldrope-demo">
           <div class="demo-heading"><h3>3D camera pose and depth</h3><button type="button" id="demo-reset">Reset</button></div>
           <div class="demo-controls">

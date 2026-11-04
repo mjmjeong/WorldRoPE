@@ -75,6 +75,20 @@ body{background:#fff;color:var(--text);font-family:Arial,Helvetica,sans-serif}
 .demo-assumptions{margin-top:5px;color:#727272;font-size:12px;line-height:1.55}
 .demo-assumptions summary{display:inline-block;color:#5b4c78;cursor:pointer}
 .demo-assumptions p{max-width:790px;margin:8px 0 0}
+.gaussian-explorer{margin-top:30px;padding:22px 0 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.gaussian-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.gaussian-tabs button{border:1px solid #d8dce0;border-radius:999px;background:#fff;color:#555;cursor:pointer;padding:9px 15px;font:600 13px/1.2 Arial,Helvetica,sans-serif;transition:background .15s,color .15s,border-color .15s}
+.gaussian-tabs button:hover,.gaussian-tabs button[aria-selected="true"]{border-color:#5b4c78;background:#5b4c78;color:#fff}
+.gaussian-stage{position:relative;overflow:hidden;border:1px solid #28313b;background:#0b1118;aspect-ratio:16/7;min-height:300px}
+.gaussian-stage::before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(111,170,190,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(111,170,190,.08) 1px,transparent 1px);background-size:40px 40px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent)}
+.gaussian-stage canvas{position:relative;z-index:1;display:block;width:100%;height:100%}
+.gaussian-placeholder{position:absolute;z-index:2;inset:0;display:grid;place-content:center;text-align:center;color:#dbe7ed;pointer-events:none}
+.gaussian-placeholder strong{font-size:clamp(18px,2.4vw,28px);font-weight:600;letter-spacing:-.02em}
+.gaussian-placeholder span{margin-top:8px;color:#8fa6b2;font-size:13px}
+.gaussian-caption{text-align:center;padding:18px 20px 0}
+.gaussian-caption h3{margin:0 0 5px;color:#303030;font-size:18px;font-weight:600}
+.gaussian-caption p{max-width:720px;margin:0 auto;color:#666;font-size:14px;line-height:1.55}
+.gaussian-section>.demo-shell,.gaussian-section>.demo-note,.gaussian-section>.demo-assumptions{display:none}
 thead th{background:#f3f6f7}
 tbody .ours th,tbody .ours td{background:#f2eff6;color:#4d4068}
 @media(max-width:900px){
